@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Book = require('./Book.model');
+const e = require('express');
 const port = 8080;
 const MONDODB_URI = 'mongodb://localhost/example';  // Using a database called example
 
@@ -44,6 +45,36 @@ app.get('/books/:id', function (req, res) {  //take request response object as a
         })
 })
 
+app.post('/book', function (req, res) {
+    const newBook = new Book();          // define a variable which references our Schema
+
+    newBook.title = req.body.title;     //defining what we need in the request 
+    newBook.author = req.body.author;   //refer to the  keys we pass when we save a new book
+    newBook.category = req.body.category;
+
+    newBook.save(function (err, book) {   //after passing params we will call a save method
+        if (err) {
+            res.send('error saving book');   // and if err we pass an err
+        } else {
+            console.log(book);
+            res.send(book);              // and we send it back to front end (postman in this case)
+        }
+
+
+    })
+})
+
+app.post('/book2', function (req, res) {   // setting up the route and what to do when u go there
+    Book.create(req.body, function (err, book) {        //second way to input data but here we pass in the whole body instead of pieces of it
+        if (err) {
+            res.send('error saving book');
+        } else {
+            console.log(book);
+            res.send(book);
+        }
+    })
+
+})
 
 mongoose.connect(MONDODB_URI, {
     useUnifiedTopology: true,
