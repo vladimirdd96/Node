@@ -17,15 +17,15 @@ app.get('/', function (req, res) {
     res.send('happy to be here')            //Simple response from the database just to check if it all work
 });
 
-app.get('/books', function (req, res) {
+app.get('/books', function (req, res) {       // Thats the way to get all of the books from the database
     console.log('getting all books');
-    Book.find({})
-        .exec(function (err, books) {
+    Book.find({})                             // here we r looking for all the books meeting the Scheema expectations
+        .exec(function (err, books) {         // executing it while passing err and books so we can get one of them
             if (err) {
                 res.send('error occured')
             } else {
                 console.log(books);
-                res.json(books);
+                res.json(books);              // give me a json file of all the books when i ask for this funct
             }
         });
 });
@@ -72,9 +72,28 @@ app.post('/book2', function (req, res) {   // setting up the route and what to d
             console.log(book);
             res.send(book);
         }
-    })
+    });
+});
 
+app.put('/book/:id', function (req, res) {
+    Book.findOneAndUpdate({
+        _id: req.params.id      // setting up the query
+    }, {
+        $set: { title: req.body.title },
+                { upsert: true },
+        {
+            function(err, newBook) {
+                if (err) {
+                    console.log('error occured');
+                } else {
+                    console.log(newBook);
+                    res.status(204);
+                }
+            }
+        },
 })
+
+
 
 mongoose.connect(MONDODB_URI, {
     useUnifiedTopology: true,
