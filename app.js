@@ -75,23 +75,26 @@ app.post('/book2', function (req, res) {   // setting up the route and what to d
     });
 });
 
-app.put('/book/:id', function (req, res) {
-    Book.findOneAndUpdate({
+app.put('/book/:id', function (req, res) {      //findOneAndUpdate method inside of an api call to /book/:id
+    Book.findOneAndUpdate({         //looks like findOne book but we update it also
         _id: req.params.id      // setting up the query
     }, {
-        $set: { title: req.body.title },
-                { upsert: true },
+        $set:
+            { title: req.body.title }
+    },        //setting the title that we want to change
+        { upsert: true },
         {
             function(err, newBook) {
                 if (err) {
                     console.log('error occured');
                 } else {
                     console.log(newBook);
-                    res.status(204);
+                    res.status(204);          // after the update i put status 204 just so i know i updated correctly
                 }
             }
-        },
+        })
 })
+
 
 
 
